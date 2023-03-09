@@ -3,10 +3,10 @@ import Network
 
 private let GoogleCastMDNSServiceName = "_googlecast._tcp"
 
-public class Discovery {
+public class CastDiscovery {
     private var browser: NWBrowser?
     
-    public weak var delegate: DiscoveryDelegate?
+    public weak var delegate: CastDiscoveryDelegate?
     
     public init() {
     }
@@ -18,7 +18,7 @@ public class Discovery {
     }
     
     public func start() {
-        print("Discovery.start")
+        print("CastDiscovery.start")
         if browser == nil {
             let parameter = NWParameters()
             browser = NWBrowser(for: .bonjourWithTXTRecord(type: GoogleCastMDNSServiceName, domain: nil), using: parameter)
@@ -29,22 +29,22 @@ public class Discovery {
     }
     
     public func stop() {
-        print("Discovery.stop")
+        print("CastDiscovery.stop")
         browser?.cancel()
         browser = nil
     }
     
     private func onDiscoveryStateUpdate(_ state: NWBrowser.State) {
-        print("Discovery.onDiscoveryStateUpdate: state = \(state)")
+        print("CastDiscovery.onDiscoveryStateUpdate: state = \(state)")
         switch state {
             case .ready:
-                delegate?.discoveryDidStart(self)
+                delegate?.castDiscoveryDidStart(self)
                 
             case .cancelled:
-                delegate?.discoveryDidStop(self)
+                delegate?.castDiscoveryDidStop(self)
                 
             case .failed(let error):
-                delegate?.discoveryFailed(self, error: error)
+                delegate?.castDiscoveryFailed(self, error: error)
                 
             default:
                 break
@@ -52,26 +52,26 @@ public class Discovery {
     }
     
     private func onDiscoveryBrowseResultsChangedUpdate(_ results: Set<NWBrowser.Result>, _ changes: Set<NWBrowser.Result.Change>) {
-        print("Discovery.onDiscoveryBrowseResultsChangedUpdate: results = \(results), changes = \(changes)")
+        print("CastDiscovery.onDiscoveryBrowseResultsChangedUpdate: results = \(results), changes = \(changes)")
         for change in changes {
             switch change {
                 case .added(let result):
                     guard let receiver = CastDevice(from: result) else {
                         break
                     }
-                    delegate?.discovery(self, didFind: receiver)
+                    delegate?.castDiscovery(self, didFind: receiver)
                     
                 case .changed(old: _, new: let newResult, flags: _):
                     guard let receiver = CastDevice(from: newResult) else {
                         break
                     }
-                    delegate?.discovery(self, didUpdate: receiver)
+                    delegate?.castDiscovery(self, didUpdate: receiver)
                     
                 case .removed(let result):
                     guard let receiver = CastDevice(from: result) else {
                         break
                     }
-                    delegate?.discovery(self, didRemove: receiver)
+                    delegate?.castDiscovery(self, didRemove: receiver)
                     
                 default:
                     break
