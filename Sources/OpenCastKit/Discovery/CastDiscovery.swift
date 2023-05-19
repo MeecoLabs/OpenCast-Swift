@@ -3,12 +3,30 @@ import Network
 
 private let GoogleCastMDNSServiceName = "_googlecast._tcp"
 
+protocol BonjourBrowser {
+    var stateUpdateHandler: ((_ newState: NWBrowser.State) -> Void)? { get set }
+    var browseResultsChangedHandler: ((_ newResults: Set<NWBrowser.Result>, _ changes: Set<NWBrowser.Result.Change>) -> Void)? { get set }
+    func start(queue: DispatchQueue)
+    func cancel()
+}
+
+extension NWBrowser: BonjourBrowser {}
+
 public class CastDiscovery {
-    private var browser: NWBrowser?
+    private var browserFactory: () -> BonjourBrowser
+    private var browser: BonjourBrowser?
     
     public weak var delegate: CastDiscoveryDelegate?
     
     public init() {
+        self.browserFactory = {
+            let parameter = NWParameters()
+            return NWBrowser(for: .bonjourWithTXTRecord(type: GoogleCastMDNSServiceName, domain: nil), using: parameter)
+        }
+    }
+    
+    internal init(browserFactory: @escaping () -> BonjourBrowser) {
+        self.browserFactory = browserFactory
     }
     
     deinit {
@@ -20,8 +38,7 @@ public class CastDiscovery {
     public func start() {
         print("CastDiscovery.start")
         if browser == nil {
-            let parameter = NWParameters()
-            browser = NWBrowser(for: .bonjourWithTXTRecord(type: GoogleCastMDNSServiceName, domain: nil), using: parameter)
+            browser = self.browserFactory()
             browser!.stateUpdateHandler = self.onDiscoveryStateUpdate
             browser!.browseResultsChangedHandler = self.onDiscoveryBrowseResultsChangedUpdate
             browser!.start(queue: .global())
@@ -31,6 +48,8 @@ public class CastDiscovery {
     public func stop() {
         print("CastDiscovery.stop")
         browser?.cancel()
+        browser?.stateUpdateHandler = nil
+        browser?.browseResultsChangedHandler = nil
         browser = nil
     }
     
