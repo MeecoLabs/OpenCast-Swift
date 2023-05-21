@@ -474,16 +474,32 @@ public class CastControl: RequestDispatchable {
         }
     }
     
+    public func editTracksInformation(activeTrackIds: [Int]?, textTrackStyle: TextTrackStyle?, for app: CastApp) {
+        guard let app = connectedApp else {
+            return
+        }
+      
+        if let mediaStatus = currentMediaStatus {
+            mediaControlChannel.editTracksInformation(activeTrackIds: activeTrackIds, textTrackStyle: textTrackStyle, for: app, mediaSessionId: mediaStatus.mediaSessionId)
+        } else {
+            mediaControlChannel.requestMediaStatus(for: app) { result in
+                switch result {
+                    case .success(let mediaStatus):
+                        self.mediaControlChannel.editTracksInformation(activeTrackIds: activeTrackIds, textTrackStyle: textTrackStyle, for: app, mediaSessionId: mediaStatus.mediaSessionId)
+            
+                    case .failure(let error):
+                        print(error)
+                }
+            }
+        }
+    }
+    
     public func setVolume(_ volume: Float) {
         receiverControlChannel.setVolume(volume)
     }
     
     public func setMuted(_ muted: Bool) {
         receiverControlChannel.setMuted(muted)
-    }
-    
-    public func editTracksInformation(activeTrackIds: [Int]?, textTrackStyle: TextTrackStyle?, for app: CastApp) {
-        mediaControlChannel.editTracksInformation(activeTrackIds: activeTrackIds, textTrackStyle: textTrackStyle, for: app)
     }
 }
 

@@ -10,6 +10,7 @@ import Foundation
 struct EditTracksInfoRequest: CastJSONPayload {
     var requestId: Int?
     let type = "EDIT_TRACKS_INFO"
+    let mediaSessionId: Int
     let activeTrackIds: [Int]?
     let textTrackStyle: TextTrackStyle?
 }

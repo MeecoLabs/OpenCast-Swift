@@ -249,8 +249,8 @@ class MediaControlChannel: CastChannel {
         }
     }
     
-    public func editTracksInformation(activeTrackIds: [Int]?, textTrackStyle: TextTrackStyle?, for app: CastApp) {
-        let payload = EditTracksInfoRequest(activeTrackIds: activeTrackIds, textTrackStyle: textTrackStyle)
+    public func editTracksInformation(activeTrackIds: [Int]?, textTrackStyle: TextTrackStyle?, for app: CastApp, mediaSessionId: Int) {
+        let payload = EditTracksInfoRequest(mediaSessionId: mediaSessionId, activeTrackIds: activeTrackIds, textTrackStyle: textTrackStyle)
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,
                                                 payload: payload)
