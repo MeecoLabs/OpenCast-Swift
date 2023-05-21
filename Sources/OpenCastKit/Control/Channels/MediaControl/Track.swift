@@ -8,7 +8,7 @@
 import Foundation
 
 public struct Track: Codable {
-    public init(isInband: Bool? = nil, language: String? = nil, name: String? = nil, roles: [String]? = nil, subtype: String? = nil, trackContentId: String? = nil, trackContentType: String? = nil, trackId: Int, type: TrackType? = nil) {
+    public init(isInband: Bool? = nil, language: String? = nil, name: String? = nil, roles: [String]? = nil, subtype: TextTrackType? = nil, trackContentId: String? = nil, trackContentType: String? = nil, trackId: Int, type: TrackType? = nil) {
         self.isInband = isInband
         self.language = language
         self.name = name
@@ -24,7 +24,7 @@ public struct Track: Codable {
     let language: String?
     let name: String?
     let roles: [String]?
-    let subtype: String?
+    let subtype: TextTrackType?
     let trackContentId: String?
     let trackContentType: String? // or CaptionMimeType
     let trackId: Int

@@ -303,7 +303,7 @@ public class CastControl: RequestDispatchable {
         }
     }
     
-    public func connect(to app: CastApp) {
+    private func connect(to app: CastApp) {
         connectionChannel.connect(to: app)
     }
 }
