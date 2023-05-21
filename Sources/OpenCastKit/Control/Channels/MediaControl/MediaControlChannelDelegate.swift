@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol MediaControlChannelDelegate: AnyObject {
+protocol MediaControlChannelDelegate: AnyObject {
     func channel(_ channel: MediaControlChannel, didReceive mediaStatus: CastMediaStatus)
 }

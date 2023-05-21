@@ -481,6 +481,10 @@ public class CastControl: RequestDispatchable {
     public func setMuted(_ muted: Bool) {
         receiverControlChannel.setMuted(muted)
     }
+    
+    public func editTracksInformation(activeTrackIds: [Int]?, textTrackStyle: TextTrackStyle?, for app: CastApp) {
+        mediaControlChannel.editTracksInformation(activeTrackIds: activeTrackIds, textTrackStyle: textTrackStyle, for: app)
+    }
 }
 
 extension CastControl: HeartbeatChannelDelegate {

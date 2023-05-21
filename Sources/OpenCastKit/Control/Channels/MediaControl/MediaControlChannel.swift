@@ -145,7 +145,7 @@ private let Namespace = "urn:x-cast:com.google.cast.media"
 //    }
 //}
 
-public class MediaControlChannel: CastChannel {
+class MediaControlChannel: CastChannel {
     private var delegate: MediaControlChannelDelegate? {
         return requestDispatcher as? MediaControlChannelDelegate
     }
