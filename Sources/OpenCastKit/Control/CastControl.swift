@@ -23,7 +23,7 @@ public class CastControl: RequestDispatchable {
     
     private lazy var currentRequestId = Int(arc4random_uniform(800))
     
-    private(set) var isConnected = false {
+    public private(set) var isConnected = false {
         didSet {
             if oldValue != isConnected {
                 if isConnected {
