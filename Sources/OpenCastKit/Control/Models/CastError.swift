@@ -9,6 +9,7 @@ import Foundation
 
 public enum CastError: Error {
     case request(String)
+    case session(String)
     case launch(String)
     case load(String)
 }

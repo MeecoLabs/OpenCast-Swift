@@ -17,6 +17,34 @@ public class CastControl: RequestDispatchable {
     
     public weak var delegate: CastControlDelegate?
     
+    public private(set) var connectedApp: CastApp?
+    
+    public private(set) var currentStatus: CastStatus? {
+        didSet {
+            guard let status = currentStatus else {
+                return
+            }
+         
+            if oldValue != status {
+                DispatchQueue.main.async {
+                    self.delegate?.castControl(self, deviceStatusDidChange: status)
+                }
+            }
+        }
+    }
+    
+    public private(set) var currentMediaStatus: CastMediaStatus? {
+        didSet {
+            guard let status = currentMediaStatus else { return }
+        
+            if oldValue != status {
+                DispatchQueue.main.async {
+                    self.delegate?.castControl(self, mediaStatusDidChange: status)
+                }
+            }
+        }
+    }
+    
     private let senderName: String = "sender-\(UUID().uuidString)"
     private var channels = [String: CastChannel]()
     private var responseHandlers = [Int: CastResponseHandler]()
@@ -266,6 +294,12 @@ public class CastControl: RequestDispatchable {
       return channel
     }()
     
+    private lazy var mediaControlChannel: MediaControlChannel = {
+      let channel = MediaControlChannel()
+      self.add(channel: channel)
+      return channel
+    }()
+    
     public func add(channel: CastChannel) {
         let namespace = channel.namespace
         guard channels[namespace] == nil else {
@@ -291,6 +325,36 @@ public class CastControl: RequestDispatchable {
         receiverControlChannel.getAppAvailability(apps: apps, completion: completion)
     }
     
+    public func join(app: CastApp?, completion: @escaping (Result<CastApp, CastError>) -> Void) {
+        guard let target = app ?? currentStatus?.apps.first else {
+            completion(Result.failure(CastError.session("No apps running")))
+            return
+        }
+        
+        if target == connectedApp {
+            completion(Result.success(target))
+        } else if let existing = currentStatus?.apps.first(where: { $0.id == target.id }) {
+            connect(to: existing)
+            completion(Result.success(existing))
+        } else {
+            receiverControlChannel.requestStatus { [weak self] result in
+                switch result {
+                    case .success(let status):
+                        guard let app = status.apps.first else {
+                            completion(Result.failure(CastError.launch("Unable to get launched app instance")))
+                            return
+                        }
+                 
+                        self?.connect(to: app)
+                        completion(Result.success(app))
+                 
+                    case .failure(let error):
+                        completion(Result.failure(error))
+                }
+            }
+        }
+    }
+    
     public func launch(appId: String, completion: @escaping (Result<CastApp, CastError>) -> Void) {
         receiverControlChannel.launch(appId: appId) { [weak self] result in
             switch result {
@@ -304,8 +368,118 @@ public class CastControl: RequestDispatchable {
         }
     }
     
+    public func stopCurrentApp() {
+        guard let app = currentStatus?.apps.first else {
+            return
+        }
+      
+      receiverControlChannel.stop(app: app)
+    }
+    
+    public func leave(_ app: CastApp) {
+        connectionChannel.leave(app)
+        connectedApp = nil
+    }
+    
+    public func load(media: CastMedia, with app: CastApp, completion: @escaping (Result<CastMediaStatus, CastError>) -> Void) {
+        mediaControlChannel.load(media: media, with: app, completion: completion)
+    }
+    
+    public func requestMediaStatus(for app: CastApp, completion: ((Result<CastMediaStatus, CastError>) -> Void)? = nil) {
+        mediaControlChannel.requestMediaStatus(for: app)
+    }
+    
     private func connect(to app: CastApp) {
         connectionChannel.connect(to: app)
+        connectedApp = app
+    }
+    
+    public func pause() {
+        guard let app = connectedApp else {
+            return
+        }
+      
+        if let mediaStatus = currentMediaStatus {
+            mediaControlChannel.sendPause(for: app, mediaSessionId: mediaStatus.mediaSessionId)
+        } else {
+            mediaControlChannel.requestMediaStatus(for: app) { result in
+              switch result {
+                  case .success(let mediaStatus):
+                      self.mediaControlChannel.sendPause(for: app, mediaSessionId: mediaStatus.mediaSessionId)
+                  
+                  case .failure(let error):
+                      print(error)
+                }
+            }
+        }
+    }
+    
+    public func play() {
+        guard let app = connectedApp else {
+            return
+        }
+      
+        if let mediaStatus = currentMediaStatus {
+            mediaControlChannel.sendPlay(for: app, mediaSessionId: mediaStatus.mediaSessionId)
+        } else {
+            mediaControlChannel.requestMediaStatus(for: app) { result in
+                switch result {
+                    case .success(let mediaStatus):
+                        self.mediaControlChannel.sendPlay(for: app, mediaSessionId: mediaStatus.mediaSessionId)
+            
+                    case .failure(let error):
+                        print(error)
+                }
+            }
+        }
+    }
+    
+    public func stop() {
+        guard let app = connectedApp else {
+            return
+        }
+      
+        if let mediaStatus = currentMediaStatus {
+            mediaControlChannel.sendStop(for: app, mediaSessionId: mediaStatus.mediaSessionId)
+        } else {
+            mediaControlChannel.requestMediaStatus(for: app) { result in
+                switch result {
+                    case .success(let mediaStatus):
+                        self.mediaControlChannel.sendStop(for: app, mediaSessionId: mediaStatus.mediaSessionId)
+            
+                    case .failure(let error):
+                        print(error)
+                }
+            }
+        }
+    }
+    
+    public func seek(to currentTime: Float) {
+        guard let app = connectedApp else {
+            return
+        }
+      
+        if let mediaStatus = currentMediaStatus {
+            mediaControlChannel.sendSeek(to: currentTime, for: app, mediaSessionId: mediaStatus.mediaSessionId)
+        } else {
+            mediaControlChannel.requestMediaStatus(for: app) { result in
+                switch result {
+                    case .success(let mediaStatus):
+                        self.mediaControlChannel.sendSeek(to: currentTime, for: app, mediaSessionId: mediaStatus.mediaSessionId)
+            
+                    case .failure(let error):
+                        print(error)
+                }
+            }
+        }
+    }
+    
+    public func setVolume(_ volume: Float) {
+        receiverControlChannel.setVolume(volume)
+    }
+    
+    public func setMuted(_ muted: Bool) {
+        receiverControlChannel.setMuted(muted)
     }
 }
 

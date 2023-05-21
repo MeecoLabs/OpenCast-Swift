@@ -20,7 +20,7 @@ public struct CastAppIdentifier {
     public static let googleAssistant = "97216CB6"
 }
 
-public struct CastApp: Decodable {
+public struct CastApp: Decodable, Equatable {
     public let id: String
     public let appType: String
     public let displayName: String
@@ -54,7 +54,7 @@ extension CastApp {
     }
 }
 
-public struct CastVolume: Decodable {
+public struct CastVolume: Decodable, Equatable {
     public let controlType: String
     public let level: Double
     public let muted: Bool
@@ -70,7 +70,7 @@ extension CastVolume {
     }
 }
 
-public struct CastStatus: Decodable {
+public struct CastStatus: Decodable, Equatable {
     public let volume: CastVolume
     public let isActiveInput: Bool
     public let isStandBy: Bool
@@ -157,9 +157,10 @@ class ReceiverControlChannel: CastChannel {
     }
     
     public func getAppAvailability(apps: [String], completion: @escaping (Result<AppAvailability, CastError>) -> Void) {
+        let payload = AppAvailabilityPayload(appId: apps)
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: CastConstants.receiver,
-                                                payload: AppAvailabilityPayload(appId: apps))
+                                                payload: payload)
         
         send(request) { result in
             switch result {
@@ -210,5 +211,34 @@ class ReceiverControlChannel: CastChannel {
                     completion(.failure(error))
             }
         }
+    }
+    
+    public func stop(app: CastApp) {
+        stop(app: app.sessionId)
+    }
+    
+    public func stop(app sessionId: String) {
+        let payload = StopAppPayload(sessionId: sessionId)
+        let request = requestDispatcher.request(withNamespace: namespace,
+                                               destinationId: CastConstants.receiver,
+                                               payload: payload)
+            
+        send(request)
+    }
+    
+    public func setVolume(_ volume: Float) {
+        let payload = VolumeRequest(volume: Volume(controlType: nil, level: volume, muted: nil, stepInterval: nil))
+        let request = requestDispatcher.request(withNamespace: namespace,
+                                         destinationId: CastConstants.receiver,
+                                         payload: payload)
+        send(request)
+    }
+    
+    public func setMuted(_ isMuted: Bool) {
+        let payload = VolumeRequest(volume: Volume(controlType: nil, level: nil, muted: isMuted, stepInterval: nil))
+        let request = requestDispatcher.request(withNamespace: namespace,
+                                         destinationId: CastConstants.receiver,
+                                         payload: payload)
+        send(request)
     }
 }

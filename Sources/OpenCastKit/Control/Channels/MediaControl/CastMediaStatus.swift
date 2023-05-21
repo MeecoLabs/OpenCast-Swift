@@ -7,12 +7,13 @@
 
 import Foundation
 
-public struct CastMediaStatus {
+public struct CastMediaStatus: Codable, Equatable {
+    public let mediaSessionId: Int
     // TODO
 }
 
 extension CastMediaStatus {
     init(json: NSDictionary) {
-        
+        mediaSessionId = json["mediaSessionId"] as? Int ?? 0
     }
 }

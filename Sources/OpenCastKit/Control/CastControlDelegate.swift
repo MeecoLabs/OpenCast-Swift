@@ -11,10 +11,18 @@ public protocol CastControlDelegate: AnyObject {
     func castControl(_ client: CastControl, didConnectTo device: CastDevice)
     
     func castControl(_ client: CastControl, didDisconnectFrom device: CastDevice)
+    
+    func castControl(_ client: CastControl, deviceStatusDidChange status: CastStatus)
+    
+    func castControl(_ client: CastControl, mediaStatusDidChange: CastMediaStatus)
 }
 
 public extension CastControlDelegate {
     func castControl(_ client: CastControl, didConnectTo device: CastDevice) {}
     
     func castControl(_ client: CastControl, didDisconnectFrom device: CastDevice) {}
+    
+    func castControl(_ client: CastControl, deviceStatusDidChange status: CastStatus) {}
+    
+    func castControl(_ client: CastControl, mediaStatusDidChange: CastMediaStatus) {}
 }
