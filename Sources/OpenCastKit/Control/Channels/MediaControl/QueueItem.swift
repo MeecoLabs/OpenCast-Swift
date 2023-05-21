@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct QueueItem: Codable {
+public struct QueueItem: Codable {
     let activeTrackIds: [Int]?
     let autoplay: Bool?
     let itemId: Int?

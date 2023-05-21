@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum UserAction: String, Codable {
+public enum UserAction: String, Codable {
     case like = "LIKE"
     case dislike = "DISLIKE"
     case follow = "FOLLOW"

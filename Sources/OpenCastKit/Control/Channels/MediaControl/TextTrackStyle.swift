@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TextTrackStyle: Codable {
+public struct TextTrackStyle: Codable {
     let backgroundColor: String?
     let edgeColor: String?
     let edgeType: TextTrackEdgeType?

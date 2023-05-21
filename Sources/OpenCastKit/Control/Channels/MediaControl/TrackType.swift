@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TrackType: String, Codable {
+public enum TrackType: String, Codable {
     case text = "TEXT"
     case audio = "AUDIO"
     case video = "VIDEO"

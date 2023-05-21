@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MetadataType: String, Codable {
+public enum MetadataType: String, Codable {
     case generic = "GENERIC"
     case movie = "MOVIE"
     case tvShow = "TV_SHOW"

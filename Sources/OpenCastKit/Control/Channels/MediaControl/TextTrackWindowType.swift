@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TextTrackWindowType: String, Codable {
+public enum TextTrackWindowType: String, Codable {
     case none = "NONE"
     case normal = "NORMAL"
     case roundedCorners = "ROUNDED_CORNERS"

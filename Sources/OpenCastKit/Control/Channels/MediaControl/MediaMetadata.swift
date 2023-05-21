@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MediaMetadata: Codable {
+public struct MediaMetadata: Codable {
     let metadataType: MetadataType?
     let posterUrl: String?
     let queueItemId: Int?

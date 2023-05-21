@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TextTrackEdgeType: String, Codable {
+public enum TextTrackEdgeType: String, Codable {
     case `none` = "NONE"
     case outline = "OUTLINE"
     case dropShadow = "DROP_SHADOW"

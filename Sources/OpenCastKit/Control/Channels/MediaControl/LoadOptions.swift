@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct LoadOptions: Codable {
+public struct LoadOptions: Codable {
     let contentFilteringMode: ContentFilteringMode?
 }

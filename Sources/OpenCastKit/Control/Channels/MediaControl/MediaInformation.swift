@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MediaInformation: Codable {
+public struct MediaInformation: Codable {
     let breakClips: [BreakClip]?
     let breaks: [Break]?
     let contentId: String

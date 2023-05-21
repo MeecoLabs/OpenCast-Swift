@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Break: Codable {
+public struct Break: Codable {
     let breakClipIds: [String]?
     let duration: Int?
     let id: String

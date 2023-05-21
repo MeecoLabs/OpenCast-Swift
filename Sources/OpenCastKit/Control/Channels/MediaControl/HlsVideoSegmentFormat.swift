@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum HlsVideoSegmentFormat: String, Codable {
+public enum HlsVideoSegmentFormat: String, Codable {
     case MPEG2_TS = "MPEG2_TS"
     case FMP4 = "FMP4"
 }

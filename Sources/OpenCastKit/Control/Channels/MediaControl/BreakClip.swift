@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct BreakClip: Codable {
+public struct BreakClip: Codable {
     let clickThroughUrl: String?
     let contentId: String?
     let contentType: String?

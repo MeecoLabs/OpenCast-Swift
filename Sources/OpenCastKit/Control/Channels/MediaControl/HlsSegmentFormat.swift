@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum HlsSegmentFormat: String, Codable {
+public enum HlsSegmentFormat: String, Codable {
     case AAC = "AAC"
     case AC3 = "AC3"
     case MP3 = "MP3"

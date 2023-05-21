@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TextTrackFontStyle: String, Codable {
+public enum TextTrackFontStyle: String, Codable {
     case normal = "NORMAL"
     case bold = "BOLD"
     case boldItalic = "BOLD_ITALIC"

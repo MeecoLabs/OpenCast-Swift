@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct UserActionState: Codable {
+public struct UserActionState: Codable {
     let userAction: UserAction
 }

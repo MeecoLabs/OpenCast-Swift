@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum QueueType: String, Codable {
+public enum QueueType: String, Codable {
     case album = "ALBUM"
     case playlist = "PLAYLIST"
     case audiobook = "AUDIOBOOK"

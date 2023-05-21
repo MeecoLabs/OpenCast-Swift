@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum StreamType: String, Codable {
+public enum StreamType: String, Codable {
     case buffered = "BUFFERED"
     case live = "LIVE"
     case `none` = "NONE"

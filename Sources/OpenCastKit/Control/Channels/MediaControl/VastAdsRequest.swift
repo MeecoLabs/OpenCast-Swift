@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct VastAdsRequest: Codable {
+public struct VastAdsRequest: Codable {
     let adsResponse: String?
     let adTagUrl: String?
 }

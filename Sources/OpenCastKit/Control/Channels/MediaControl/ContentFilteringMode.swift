@@ -7,6 +7,6 @@
 
 import Foundation
 
-enum ContentFilteringMode: String, Codable {
+public enum ContentFilteringMode: String, Codable {
     case filterExplicit = "FILTER_EXPLICIT"
 }

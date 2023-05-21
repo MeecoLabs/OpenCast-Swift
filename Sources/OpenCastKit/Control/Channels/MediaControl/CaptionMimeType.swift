@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum CaptionMimeType: String, Codable {
+public enum CaptionMimeType: String, Codable {
     case CEA608 = "CEA608"
     case TTML = "TTML"
     case VTT = "VTT"

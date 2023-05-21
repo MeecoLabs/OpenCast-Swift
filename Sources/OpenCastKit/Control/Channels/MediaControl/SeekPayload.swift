@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SeekPayload: CastJSONPayload {
+public struct SeekPayload: CastJSONPayload {
     var requestId: Int?
     let type = "SEEK"
     let sessionId: String

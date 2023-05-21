@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MediaCategory: String, Codable {
+public enum MediaCategory: String, Codable {
     case audio = "AUDIO"
     case video = "VIDEO"
     case image = "IMAGE"

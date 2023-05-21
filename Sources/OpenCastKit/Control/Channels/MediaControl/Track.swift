@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Track: Codable {
+public struct Track: Codable {
     let isInband: Bool?
     let language: String?
     let name: String?

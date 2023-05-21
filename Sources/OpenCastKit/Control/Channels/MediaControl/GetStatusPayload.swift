@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GetStatusPayload: CastJSONPayload {
+public struct GetStatusPayload: CastJSONPayload {
     var requestId: Int?
     let type = "GET_STATUS"
     let sessionId: String

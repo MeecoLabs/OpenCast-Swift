@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TextTrackFontGenericFamily: String, Codable {
+public enum TextTrackFontGenericFamily: String, Codable {
     case sansSerif = "SANS_SERIF"
     case monospacedSansSerif = "MONOSPACED_SANS_SERIF"
     case serif = "SERIF"
