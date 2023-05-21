@@ -307,3 +307,15 @@ public class CastControl: RequestDispatchable {
         connectionChannel.connect(to: app)
     }
 }
+
+extension CastControl: HeartbeatChannelDelegate {
+    func channelDidConnect(_ channel: HeartbeatChannel) {
+        if !isConnected {
+            isConnected = true
+        }
+    }
+    
+    func channelDidTimeout(_ channel: HeartbeatChannel) {
+        disconnect()
+    }
+}
