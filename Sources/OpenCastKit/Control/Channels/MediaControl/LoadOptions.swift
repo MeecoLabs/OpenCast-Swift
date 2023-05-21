@@ -8,5 +8,9 @@
 import Foundation
 
 public struct LoadOptions: Codable {
+    public init(contentFilteringMode: ContentFilteringMode? = nil) {
+        self.contentFilteringMode = contentFilteringMode
+    }
+    
     let contentFilteringMode: ContentFilteringMode?
 }

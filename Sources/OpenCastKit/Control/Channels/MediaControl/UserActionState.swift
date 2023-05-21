@@ -8,5 +8,9 @@
 import Foundation
 
 public struct UserActionState: Codable {
+    public init(userAction: UserAction) {
+        self.userAction = userAction
+    }
+    
     let userAction: UserAction
 }
