@@ -14,6 +14,7 @@ public struct CastMediaStatus: Codable, Equatable {
 
 extension CastMediaStatus {
     init(json: NSDictionary) {
+        print("json = \(json)")
         mediaSessionId = json["mediaSessionId"] as? Int ?? 0
     }
 }
