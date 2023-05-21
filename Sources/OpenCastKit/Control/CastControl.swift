@@ -213,6 +213,7 @@ public class CastControl: RequestDispatchable {
                     let headerSize = MemoryLayout<UInt32>.size
                     let header = data.withUnsafeBytes { $0.load(as: UInt32.self) }
                     let payloadSize = Int(CFSwapInt32BigToHost(header))
+                    // TODO: the payload size could be smaller than how much payload we need to load, so we need some form of workaround
                     let payload = data[headerSize..<headerSize+payloadSize]
                     let message = try CastMessage(serializedData: payload)
                     print("CastClient.receive: message = \(message)")
