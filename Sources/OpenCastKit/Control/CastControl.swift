@@ -202,7 +202,7 @@ public class CastControl: RequestDispatchable {
     }
     
     private func receive() {
-        connection?.receiveDiscontiguous(minimumIncompleteLength: 1, maximumLength: 8192, completion: { data, contentContext, isComplete, error in
+        connection?.receiveDiscontiguous(minimumIncompleteLength: 1, maximumLength: 16384, completion: { data, contentContext, isComplete, error in
             if let error {
                 print("CastClient.receive: error = \(error)")
             } else if let data {
