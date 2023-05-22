@@ -238,19 +238,16 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     private func receive() {
-        print("CastClient.receive")
         let data = Data()
         self.receiveMore(data)
     }
     
     private func receiveMore(_ buffer: Data) {
-        print("CastClient.receiveMore")
         connection?.receive(minimumIncompleteLength: 1, maximumLength: 16 * 1024, completion: { data, contentContext, isComplete, error in
             if let error {
                 print("CastClient.receiveMore: error = \(error)")
                 self.receive()
             } else if let data {
-                print("CastClient.receiveMore: received")
                 do {
                     let data = buffer + Data(data)
                     
@@ -274,10 +271,6 @@ public class CastControl: RequestDispatchable, Channelable {
     
     private func processReceived(_ data: Data, headerSize: Int, payloadSize: Int) throws {
         print("CastClient.processReceived")
-//        let headerSize = MemoryLayout<UInt32>.size
-//        let header = data.withUnsafeBytes { $0.load(as: UInt32.self) }
-//        let payloadSize = Int(CFSwapInt32BigToHost(header))
-        // TODO: data will have a maximum size of 16 * 1024 so the payload size might be too large sometimes, so we need to combine iterations
         let payload = data[headerSize..<headerSize+payloadSize]
         let message = try CastMessage(serializedData: payload)
         print("CastClient.receive: message = \(message)")
