@@ -10,5 +10,5 @@ import Foundation
 struct VolumeRequest: CastJSONPayload {
     var requestId: Int?
     let type = "SET_VOLUME"
-    let volume: Volume?
+    let volume: SetVolume
 }

@@ -12,9 +12,9 @@ public protocol CastControlDelegate: AnyObject {
     
     func castControl(_ client: CastControl, didDisconnectFrom device: CastDevice)
     
-    func castControl(_ client: CastControl, activeAppDidChange app: CastApp?)
+    func castControl(_ client: CastControl, activeAppDidChange app: ReceiverApp?)
     
-    func castControl(_ client: CastControl, deviceStatusDidChange status: CastStatus)
+    func castControl(_ client: CastControl, deviceStatusDidChange status: ReceiverStatus)
     
     func castControl(_ client: CastControl, mediaStatusDidChange status: CastMediaStatus)
 }
@@ -24,9 +24,9 @@ public extension CastControlDelegate {
     
     func castControl(_ client: CastControl, didDisconnectFrom device: CastDevice) {}
     
-    func castControl(_ client: CastControl, activeAppDidChange app: CastApp?) {}
+    func castControl(_ client: CastControl, activeAppDidChange app: ReceiverApp?) {}
     
-    func castControl(_ client: CastControl, deviceStatusDidChange status: CastStatus) {}
+    func castControl(_ client: CastControl, deviceStatusDidChange status: ReceiverStatus) {}
     
     func castControl(_ client: CastControl, mediaStatusDidChange status: CastMediaStatus) {}
 }

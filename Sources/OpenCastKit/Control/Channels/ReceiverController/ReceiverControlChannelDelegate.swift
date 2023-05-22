@@ -8,5 +8,5 @@
 import Foundation
 
 protocol ReceiverControlChannelDelegate: AnyObject {
-    func channel(_ channel: ReceiverControlChannel, didReceive status: CastStatus)
+    func channel(_ channel: ReceiverControlChannel, didReceive status: ReceiverStatus)
 }

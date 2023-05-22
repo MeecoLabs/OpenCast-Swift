@@ -31,7 +31,7 @@ class DeviceConnectionChannel: CastChannel {
         send(request)
     }
     
-    public func connect(to app: CastApp) {
+    public func connect(to app: ReceiverApp) {
         print("DeviceConnectionChannel: connect to \(app)")
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,
@@ -40,7 +40,7 @@ class DeviceConnectionChannel: CastChannel {
         send(request)
     }
     
-    public func leave(_ app: CastApp) {
+    public func leave(_ app: ReceiverApp) {
         print("DeviceConnectionChannel: connect to \(app)")
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,

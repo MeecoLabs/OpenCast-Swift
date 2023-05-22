@@ -7,16 +7,20 @@
 
 import Foundation
 
-public struct Volume: Codable {
-    public init(controlType: VolumeControlType?, level: Float? = nil, muted: Bool? = nil, stepInterval: Double?) {
-        self.controlType = controlType
-        self.level = level
-        self.muted = muted
-        self.stepInterval = stepInterval
+public struct Volume: Codable, Equatable {
+    let controlType: VolumeControlType
+    let level: Float
+    let muted: Bool
+    let stepInterval: Float
+}
+
+
+extension Volume {
+    init(json: NSDictionary) {
+        let controlType = json["controlType"] as! String
+        self.controlType = VolumeControlType(rawValue: controlType)!
+        self.level = json["level"] as! Float
+        self.muted = json["muted"] as! Bool
+        self.stepInterval = json["stepInterval"] as! Float
     }
-    
-    let controlType: VolumeControlType?
-    let level: Float?
-    let muted: Bool?
-    let stepInterval: Double?
 }

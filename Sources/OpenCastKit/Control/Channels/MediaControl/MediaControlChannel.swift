@@ -174,8 +174,8 @@ class MediaControlChannel: CastChannel {
         }
     }
     
-    public func requestMediaStatus(for app: CastApp, completion: ((Result<CastMediaStatus, CastError>) -> Void)? = nil) {
-        let payload = GetStatusPayload(sessionId: app.sessionId)
+    public func requestMediaStatus(for app: ReceiverApp, completion: ((Result<CastMediaStatus, CastError>) -> Void)? = nil) {
+        let payload = GetMediaStatusPayload(sessionId: app.sessionId)
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,
                                                 payload: payload)
@@ -195,7 +195,7 @@ class MediaControlChannel: CastChannel {
         }
     }
     
-    public func sendPause(for app: CastApp, mediaSessionId: Int) {
+    public func sendPause(for app: ReceiverApp, mediaSessionId: Int) {
         let payload = PausePayload(mediaSessionId: mediaSessionId)
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,
@@ -203,7 +203,7 @@ class MediaControlChannel: CastChannel {
         send(request)
     }
     
-    public func sendPlay(for app: CastApp, mediaSessionId: Int) {
+    public func sendPlay(for app: ReceiverApp, mediaSessionId: Int) {
         let payload = PlayPayload(mediaSessionId: mediaSessionId)
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,
@@ -211,7 +211,7 @@ class MediaControlChannel: CastChannel {
         send(request)
     }
     
-    public func sendStop(for app: CastApp, mediaSessionId: Int) {
+    public func sendStop(for app: ReceiverApp, mediaSessionId: Int) {
         let payload = StopPayload(mediaSessionId: mediaSessionId)
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,
@@ -219,7 +219,7 @@ class MediaControlChannel: CastChannel {
         send(request)
     }
     
-    public func sendSeek(to currentTime: Float, for app: CastApp, mediaSessionId: Int) {
+    public func sendSeek(to currentTime: Float, for app: ReceiverApp, mediaSessionId: Int) {
         let payload = SeekPayload(sessionId: app.sessionId, currentTime: currentTime, mediaSessionId: mediaSessionId)
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,
@@ -227,7 +227,7 @@ class MediaControlChannel: CastChannel {
         send(request)
     }
     
-    public func load(media: CastMedia, with app: CastApp, completion: @escaping (Result<CastMediaStatus, CastError>) -> Void) {
+    public func load(media: CastMedia, with app: ReceiverApp, completion: @escaping (Result<CastMediaStatus, CastError>) -> Void) {
         let payload = LoadPayload(sessionId: app.sessionId, activeTrackIds: media.activeTrackIds, autoplay: media.autoplay, credentials: media.credentials, credentialsType: media.credentialsType, currentTime: media.currentTime, loadOptions: media.loadOptions, media: media.media, mediaSessionId: media.mediaSessionId, playbackRate: media.playbackRate, queueData: media.queueData)
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,
@@ -249,7 +249,7 @@ class MediaControlChannel: CastChannel {
         }
     }
     
-    public func editTracksInformation(activeTrackIds: [Int]?, textTrackStyle: TextTrackStyle?, for app: CastApp, mediaSessionId: Int) {
+    public func editTracksInformation(activeTrackIds: [Int]?, textTrackStyle: TextTrackStyle?, for app: ReceiverApp, mediaSessionId: Int) {
         let payload = EditTracksInfoRequest(mediaSessionId: mediaSessionId, activeTrackIds: activeTrackIds, textTrackStyle: textTrackStyle)
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,

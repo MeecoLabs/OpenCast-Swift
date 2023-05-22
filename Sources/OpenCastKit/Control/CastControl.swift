@@ -17,7 +17,7 @@ public class CastControl: RequestDispatchable, Channelable {
     
     public weak var delegate: CastControlDelegate?
     
-    public private(set) var connectedApp: CastApp? {
+    public private(set) var connectedApp: ReceiverApp? {
         didSet {
             if oldValue != connectedApp {
                 let app = connectedApp
@@ -28,7 +28,7 @@ public class CastControl: RequestDispatchable, Channelable {
         }
     }
     
-    public private(set) var currentStatus: CastStatus? {
+    public private(set) var currentStatus: ReceiverStatus? {
         didSet {
             guard let status = currentStatus else {
                 return
@@ -336,22 +336,22 @@ public class CastControl: RequestDispatchable, Channelable {
         receiverControlChannel.getAppAvailability(apps: apps, completion: completion)
     }
     
-    public func join(app: CastApp?, completion: @escaping (Result<CastApp, CastError>) -> Void) {
-        guard let target = app ?? currentStatus?.apps.first else {
+    public func join(app: ReceiverApp?, completion: @escaping (Result<ReceiverApp, CastError>) -> Void) {
+        guard let target = app ?? currentStatus?.applications?.first else {
             completion(Result.failure(CastError.session("No apps running")))
             return
         }
         
         if target == connectedApp {
             completion(Result.success(target))
-        } else if let existing = currentStatus?.apps.first(where: { $0.id == target.id }) {
+        } else if let existing = currentStatus?.applications?.first(where: { $0.appId == target.appId }) {
             connect(to: existing)
             completion(Result.success(existing))
         } else {
             receiverControlChannel.requestStatus { [weak self] result in
                 switch result {
                     case .success(let status):
-                        guard let app = status.apps.first else {
+                        guard let app = status.applications?.first else {
                             completion(Result.failure(CastError.launch("Unable to get launched app instance")))
                             return
                         }
@@ -366,7 +366,7 @@ public class CastControl: RequestDispatchable, Channelable {
         }
     }
     
-    public func launch(appId: String, completion: @escaping (Result<CastApp, CastError>) -> Void) {
+    public func launch(appId: String, completion: @escaping (Result<ReceiverApp, CastError>) -> Void) {
         receiverControlChannel.launch(appId: appId) { [weak self] result in
             switch result {
                 case .success(let app):
@@ -380,27 +380,27 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     public func stopCurrentApp() {
-        guard let app = currentStatus?.apps.first else {
+        guard let app = currentStatus?.applications?.first else {
             return
         }
       
       receiverControlChannel.stop(app: app)
     }
     
-    public func leave(_ app: CastApp) {
+    public func leave(_ app: ReceiverApp) {
         connectionChannel.leave(app)
         connectedApp = nil
     }
     
-    public func load(media: CastMedia, with app: CastApp, completion: @escaping (Result<CastMediaStatus, CastError>) -> Void) {
+    public func load(media: CastMedia, with app: ReceiverApp, completion: @escaping (Result<CastMediaStatus, CastError>) -> Void) {
         mediaControlChannel.load(media: media, with: app, completion: completion)
     }
     
-    public func requestMediaStatus(for app: CastApp, completion: ((Result<CastMediaStatus, CastError>) -> Void)? = nil) {
+    public func requestMediaStatus(for app: ReceiverApp, completion: ((Result<CastMediaStatus, CastError>) -> Void)? = nil) {
         mediaControlChannel.requestMediaStatus(for: app)
     }
     
-    private func connect(to app: CastApp) {
+    private func connect(to app: ReceiverApp) {
         connectionChannel.connect(to: app)
         connectedApp = app
     }
@@ -485,7 +485,7 @@ public class CastControl: RequestDispatchable, Channelable {
         }
     }
     
-    public func editTracksInformation(activeTrackIds: [Int]?, textTrackStyle: TextTrackStyle?, for app: CastApp) {
+    public func editTracksInformation(activeTrackIds: [Int]?, textTrackStyle: TextTrackStyle?, for app: ReceiverApp) {
         guard let app = connectedApp else {
             return
         }
@@ -530,7 +530,7 @@ extension CastControl: HeartbeatChannelDelegate {
 }
 
 extension CastControl: ReceiverControlChannelDelegate {
-    func channel(_ channel: ReceiverControlChannel, didReceive status: CastStatus) {
+    func channel(_ channel: ReceiverControlChannel, didReceive status: ReceiverStatus) {
         currentStatus = status
     }
 }
