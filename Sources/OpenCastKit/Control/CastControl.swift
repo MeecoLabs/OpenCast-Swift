@@ -8,7 +8,7 @@
 import Foundation
 import Network
 
-public class CastControl: RequestDispatchable {
+public class CastControl: RequestDispatchable, Channelable {
     private static let encoder = JSONEncoder()
     private static let decoder = JSONDecoder()
     
@@ -57,7 +57,7 @@ public class CastControl: RequestDispatchable {
     }
     
     private let senderName: String = "sender-\(UUID().uuidString)"
-    private var channels = [String: CastChannel]()
+    internal var channels = [String: CastChannel]()
     private var responseHandlers = [Int: CastResponseHandler]()
     
     private lazy var currentRequestId = Int(arc4random_uniform(800))
