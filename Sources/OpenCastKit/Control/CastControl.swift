@@ -44,8 +44,8 @@ public class CastControl: RequestDispatchable, Channelable {
     
     public private(set) var currentMediaStatus: CastMediaStatus? {
         didSet {
-            if oldValue != currentMediaStatus {
-                let status = currentMediaStatus
+            let status = currentMediaStatus
+            if oldValue != status {
                 DispatchQueue.main.async {
                     self.delegate?.castControl(self, mediaStatusDidChange: status)
                 }
@@ -551,14 +551,12 @@ extension CastControl: HeartbeatChannelDelegate {
 
 extension CastControl: ReceiverControlChannelDelegate {
     func channel(_ channel: ReceiverControlChannel, didReceive status: ReceiverStatus) {
-        print("CastControl.didReceive receiverStatus")
         currentStatus = status
     }
 }
 
 extension CastControl: MediaControlChannelDelegate {
     func channel(_ channel: MediaControlChannel, didReceive mediaStatus: [CastMediaStatus]) {
-        print("CastControl.didReceive mediaStatus")
         currentMediaStatus = mediaStatus.first
     }
 }
