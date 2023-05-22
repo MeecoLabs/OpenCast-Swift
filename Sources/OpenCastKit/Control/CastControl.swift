@@ -255,7 +255,7 @@ public class CastControl: RequestDispatchable, Channelable {
                     let header = data.withUnsafeBytes { $0.load(as: UInt32.self) }
                     let payloadSize = Int(CFSwapInt32BigToHost(header))
                     
-                    if payloadSize > data.count {
+                    if headerSize+payloadSize > data.count {
                         self.receiveMore(data)
                     } else {
                         try self.processReceived(data, headerSize: headerSize, payloadSize: payloadSize)
