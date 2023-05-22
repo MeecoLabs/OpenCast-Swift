@@ -93,7 +93,7 @@ class ReceiverControlChannel: CastChannel {
             send(request) { result in
                 switch result {
                     case .success(let json):
-                        completion(.success(ReceiverStatus(json: json)))
+                        completion(.success(ReceiverStatusPayload(json: json).status))
 
                     case .failure(let error):
                         completion(.failure(error))
@@ -112,7 +112,7 @@ class ReceiverControlChannel: CastChannel {
         send(request) { result in
             switch result {
                 case .success(let json):
-                    guard let app = ReceiverStatus(json: json).applications?.first else {
+                    guard let app = ReceiverStatusPayload(json: json).status.applications?.first else {
                         completion(.failure(CastError.launch("Unable to get launched app instance")))
                         return
                     }

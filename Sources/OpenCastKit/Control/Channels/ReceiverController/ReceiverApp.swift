@@ -9,7 +9,7 @@ import Foundation
 
 public struct ReceiverApp: Codable, Equatable {
     public let appId: String
-    public let appType: String
+    public let appType: String // WEB, ANDROID_TV
     public let displayName: String
     public let iconUrl: String
     public let isIdleScreen: Bool
