@@ -34,17 +34,21 @@ public class CastControl: RequestDispatchable, Channelable {
                 return
             }
          
-            DispatchQueue.main.async {
-                self.delegate?.castControl(self, deviceStatusDidChange: status)
+            if oldValue != status {
+                DispatchQueue.main.async {
+                    self.delegate?.castControl(self, deviceStatusDidChange: status)
+                }
             }
         }
     }
     
     public private(set) var currentMediaStatus: CastMediaStatus? {
         didSet {
-            let status = currentMediaStatus
-            DispatchQueue.main.async {
-                self.delegate?.castControl(self, mediaStatusDidChange: status)
+            if oldValue != currentMediaStatus {
+                let status = currentMediaStatus
+                DispatchQueue.main.async {
+                    self.delegate?.castControl(self, mediaStatusDidChange: status)
+                }
             }
         }
     }
@@ -270,7 +274,9 @@ public class CastControl: RequestDispatchable, Channelable {
         print("CastClient.processReceived")
         let payload = data[headerSize..<headerSize+payloadSize]
         let message = try CastMessage(serializedData: payload)
-        print("CastClient.receive: message = \(message)")
+        if message.namespace != "urn:x-cast:com.google.cast.tp.heartbeat" {
+            print("CastClient.receive: message = \(message)")
+        }
         
         if let channel = self.channels[message.namespace] {
             switch message.payloadType {
@@ -548,12 +554,14 @@ extension CastControl: HeartbeatChannelDelegate {
 
 extension CastControl: ReceiverControlChannelDelegate {
     func channel(_ channel: ReceiverControlChannel, didReceive status: ReceiverStatus) {
+        print("CastControl.didReceive receiverStatus")
         currentStatus = status
     }
 }
 
 extension CastControl: MediaControlChannelDelegate {
     func channel(_ channel: MediaControlChannel, didReceive mediaStatus: [CastMediaStatus]) {
+        print("CastControl.didReceive mediaStatus")
         currentMediaStatus = mediaStatus.first
     }
 }
