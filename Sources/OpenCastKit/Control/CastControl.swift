@@ -148,6 +148,7 @@ public class CastControl: RequestDispatchable, Channelable {
         
         _ = self.connectionChannel
         self.receive()
+        // TODO: delay all of this just slightly
         _ = self.heartbeatChannel
         _ = self.receiverControlChannel
         _ = self.mediaControlChannel
