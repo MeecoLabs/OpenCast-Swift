@@ -523,5 +523,20 @@ extension CastControl: HeartbeatChannelDelegate {
     
     func channelDidTimeout(_ channel: HeartbeatChannel) {
         disconnect()
+        currentStatus = nil
+        currentMediaStatus = nil
+        connectedApp = nil
+    }
+}
+
+extension CastControl: ReceiverControlChannelDelegate {
+    func channel(_ channel: ReceiverControlChannel, didReceive status: CastStatus) {
+        currentStatus = status
+    }
+}
+
+extension CastControl: MediaControlChannelDelegate {
+    func channel(_ channel: MediaControlChannel, didReceive mediaStatus: CastMediaStatus) {
+        currentMediaStatus = mediaStatus
     }
 }
