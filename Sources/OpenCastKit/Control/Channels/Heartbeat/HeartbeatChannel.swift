@@ -7,7 +7,7 @@
 
 import Foundation
 
-private let Namespace = "urn:x-cast:com.google.cast.tp.heartbeat"
+let HeartbeatNamespace = "urn:x-cast:com.google.cast.tp.heartbeat"
 
 private let DisconnectTimeout: TimeInterval = 10
 
@@ -42,7 +42,7 @@ class HeartbeatChannel: CastChannel {
     }
     
     init() {
-        super.init(namespace: Namespace)
+        super.init(namespace: HeartbeatNamespace)
     }
     
     override func handleResponse(_ json: NSDictionary, sourceId: String) {

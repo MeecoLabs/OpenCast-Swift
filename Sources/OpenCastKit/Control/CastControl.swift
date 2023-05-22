@@ -127,7 +127,7 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     private func handleConnectionStateUpdate(_ state: NWConnection.State) {
-        print("CastClient.handleConnectionStateUpdate: state = \(state)")
+        print("CastControl.handleConnectionStateUpdate: state = \(state)")
         switch state {
             case .waiting(_):
                 disconnect()
@@ -144,7 +144,7 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     private func handleConnected() {
-        print("CastClient.handleConnected")
+        print("CastControl.handleConnected")
         
         _ = self.connectionChannel
         self.receive()
@@ -177,7 +177,7 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     func send(_ request: CastRequest, response: CastResponseHandler?) {
-        print("CastClient.send")
+        print("CastControl.send")
         
         if let response = response {
             responseHandlers[request.id] = response
@@ -198,18 +198,20 @@ public class CastControl: RequestDispatchable, Channelable {
                         guard let json = try? CastControl.encoder.encode(payload),
                               let jsonString = String(data: json, encoding: .utf8)
                         else {
-                            fatalError("CastClient.send: error encoding json")
+                            fatalError("CastControl.send: error encoding json")
                         }
                         $0.payloadType = .string
                         $0.payloadUtf8 = jsonString
                 }
             }
             
-            print("CastClient.send: message = \(message)")
+            if request.namespace != HeartbeatNamespace {
+                print("CastControl.send: message = \(message)")
+            }
             let messageData = try message.serializedData()
             try write(data: messageData)
         } catch {
-            print("CastClient.send: error = \(error)")
+            print("CastControl.send: error = \(error)")
             callResponseHandler(for: request.id, with: Result.failure(.request(error.localizedDescription)))
         }
     }
@@ -223,7 +225,7 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     private func write(data: Data) throws {
-        print("CastClient.write")
+        print("CastControl.write")
         
         var payloadSize = UInt32(data.count).bigEndian
         let packet = NSMutableData(bytes: &payloadSize, length: MemoryLayout<UInt32>.size)
@@ -231,7 +233,7 @@ public class CastControl: RequestDispatchable, Channelable {
             
         connection?.send(content: packet, isComplete: true, completion: .contentProcessed({ error in
             if let error {
-                print("CastClient.write: error = \(error)")
+                print("CastControl.write: error = \(error)")
                 // TODO: error
                 return
             }
@@ -246,7 +248,7 @@ public class CastControl: RequestDispatchable, Channelable {
     private func receiveMore(_ buffer: Data) {
         connection?.receive(minimumIncompleteLength: 1, maximumLength: 16 * 1024, completion: { data, contentContext, isComplete, error in
             if let error {
-                print("CastClient.receiveMore: error = \(error)")
+                print("CastControl.receiveMore: error = \(error)")
                 self.receive()
             } else if let data {
                 do {
@@ -263,7 +265,7 @@ public class CastControl: RequestDispatchable, Channelable {
                         self.receive()
                     }
                 } catch {
-                    print("CastClient.receiveMore: error = \(error)")
+                    print("CastControl.receiveMore: error = \(error)")
                     self.receive()
                 }
             }
@@ -271,11 +273,11 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     private func processReceived(_ data: Data, headerSize: Int, payloadSize: Int) throws {
-        print("CastClient.processReceived")
+        print("CastControl.processReceived")
         let payload = data[headerSize..<headerSize+payloadSize]
         let message = try CastMessage(serializedData: payload)
-        if message.namespace != "urn:x-cast:com.google.cast.tp.heartbeat" {
-            print("CastClient.receive: message = \(message)")
+        if message.namespace != HeartbeatNamespace {
+            print("CastControl.receive: message = \(message)")
         }
         
         if let channel = self.channels[message.namespace] {
@@ -289,14 +291,14 @@ public class CastControl: RequestDispatchable, Channelable {
                             self.callResponseHandler(for: requestId, with: Result.success(json))
                         }
                     } else {
-                        print("CastClient.receive: unable to get UTF8 JSON data from message")
+                        print("CastControl.receive: unable to get UTF8 JSON data from message")
                     }
                     
                 case .binary:
                     channel.handleResponse(message.payloadBinary, sourceId: message.sourceID)
             }
         } else {
-          print("CastClient.receive: no channel attached for namespace \(message.namespace)")
+          print("CastControl.receive: no channel attached for namespace \(message.namespace)")
         }
     }
     
@@ -327,7 +329,7 @@ public class CastControl: RequestDispatchable, Channelable {
     public func add(channel: CastChannel) {
         let namespace = channel.namespace
         guard channels[namespace] == nil else {
-            print("CastClient.add channel: already attached for \(namespace)")
+            print("CastControl.add channel: already attached for \(namespace)")
             return
         }
             
@@ -338,7 +340,7 @@ public class CastControl: RequestDispatchable, Channelable {
     public func remove(channel: CastChannel) {
         let namespace = channel.namespace
         guard let channel = channels.removeValue(forKey: namespace) else {
-            print("CastClient.remove channel: no channel attached for \(namespace)")
+            print("CastControl.remove channel: no channel attached for \(namespace)")
             return
         }
       
