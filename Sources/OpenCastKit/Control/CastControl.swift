@@ -177,8 +177,6 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     func send(_ request: CastRequest, response: CastResponseHandler?) {
-        print("CastControl.send")
-        
         if let response = response {
             responseHandlers[request.id] = response
         }
@@ -225,8 +223,6 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     private func write(data: Data) throws {
-        print("CastControl.write")
-        
         var payloadSize = UInt32(data.count).bigEndian
         let packet = NSMutableData(bytes: &payloadSize, length: MemoryLayout<UInt32>.size)
         packet.append(data)
@@ -273,7 +269,6 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     private func processReceived(_ data: Data, headerSize: Int, payloadSize: Int) throws {
-        print("CastControl.processReceived")
         let payload = data[headerSize..<headerSize+payloadSize]
         let message = try CastMessage(serializedData: payload)
         if message.namespace != HeartbeatNamespace {

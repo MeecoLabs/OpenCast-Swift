@@ -53,7 +53,6 @@ class HeartbeatChannel: CastChannel {
         }
         
         if rawType == "PING" {
-            print("HeartbeatChannel.handleResponse: PING from \(sourceId)")
             sendPong(to: sourceId)
         }
         
@@ -63,7 +62,6 @@ class HeartbeatChannel: CastChannel {
     }
     
     private func startBeating() {
-        print("HeartbeatChannel.startTimer")
         DispatchQueue.global(qos: .background).async {
             let timer = Timer(timeInterval: 5, repeats: true) { _ in
                 self.sendPing()
@@ -77,7 +75,6 @@ class HeartbeatChannel: CastChannel {
     }
     
     private func sendPing() {
-        print("HeartbeatChannel.sendPing")
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: CastConstants.transport,
                                                 payload: HeartbeatPingPayload())
@@ -86,7 +83,6 @@ class HeartbeatChannel: CastChannel {
     }
     
     private func sendPong(to destinationId: String) {
-        print("HeartbeatChannel.sendPong")
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: destinationId,
                                                 payload: HeartbeatPongPayload())
