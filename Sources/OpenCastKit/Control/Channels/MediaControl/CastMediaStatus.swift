@@ -34,7 +34,7 @@ public struct ExtendedMediaStatus: Codable, Equatable {
 public struct CastMediaStatus: Codable, Equatable {
     public let mediaSessionId: Int
     public let playbackRate: Float
-    public let playerState: String // IDLE, PLAYING, PAUSED
+    public let playerState: String // IDLE, BUFFERING, PLAYING, PAUSED
     public let currentTime: Float
     public let supportedMediaCommands: Int
     public let volume: SetVolume

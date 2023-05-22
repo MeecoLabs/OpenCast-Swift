@@ -34,21 +34,17 @@ public class CastControl: RequestDispatchable, Channelable {
                 return
             }
          
-            if oldValue != status {
-                DispatchQueue.main.async {
-                    self.delegate?.castControl(self, deviceStatusDidChange: status)
-                }
+            DispatchQueue.main.async {
+                self.delegate?.castControl(self, deviceStatusDidChange: status)
             }
         }
     }
     
     public private(set) var currentMediaStatus: CastMediaStatus? {
         didSet {
-            if oldValue != currentMediaStatus {
-                let status = currentMediaStatus
-                DispatchQueue.main.async {
-                    self.delegate?.castControl(self, mediaStatusDidChange: status)
-                }
+            let status = currentMediaStatus
+            DispatchQueue.main.async {
+                self.delegate?.castControl(self, mediaStatusDidChange: status)
             }
         }
     }
