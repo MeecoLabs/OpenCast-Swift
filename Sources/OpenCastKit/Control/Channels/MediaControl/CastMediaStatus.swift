@@ -42,7 +42,7 @@ public struct CastMediaStatus: Codable, Equatable {
     public let currentItemId: Int
     public let idleReason: String?
     public let extendedStatus: ExtendedMediaStatus?
-    public let repeatMode: RepeatMode
+    public let repeatMode: RepeatMode?
 }
 
 extension CastMediaStatus {
@@ -59,7 +59,10 @@ extension CastMediaStatus {
         self.idleReason = json["idleReason"] as? String
         // TODO
         self.extendedStatus = nil
-        let repeatMode = json["repeatMode"] as! String
-        self.repeatMode = RepeatMode(rawValue: repeatMode)!
+        if let repeatMode = json["repeatMode"] as? String {
+            self.repeatMode = RepeatMode(rawValue: repeatMode)!
+        } else {
+            self.repeatMode = nil
+        }
     }
 }
