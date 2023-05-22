@@ -238,11 +238,13 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     private func receive() {
+        print("CastClient.receive")
         let data = Data()
         self.receiveMore(data)
     }
     
     private func receiveMore(_ buffer: Data) {
+        print("CastClient.receiveMore")
         connection?.receiveDiscontiguous(minimumIncompleteLength: 1, maximumLength: 16 * 1024, completion: { data, contentContext, isComplete, error in
             if let error {
                 print("CastClient.receiveMore: error = \(error)")
@@ -266,6 +268,7 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     private func processReceived(_ data: Data) throws {
+        print("CastClient.processReceived")
         let headerSize = MemoryLayout<UInt32>.size
         let header = data.withUnsafeBytes { $0.load(as: UInt32.self) }
         let payloadSize = Int(CFSwapInt32BigToHost(header))
