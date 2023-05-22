@@ -8,7 +8,7 @@
 import Foundation
 
 public enum VolumeControlType: String, Codable, Equatable {
-    case attenuation = "ATTENUATION"
-    case fixed = "FIXED"
-    case master = "MASTER"
+    case attenuation = "attenuation"
+    case fixed = "fixed"
+    case master = "master"
 }
