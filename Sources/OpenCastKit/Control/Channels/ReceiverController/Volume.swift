@@ -8,10 +8,10 @@
 import Foundation
 
 public struct Volume: Codable, Equatable {
-    let controlType: VolumeControlType
-    let level: Float
-    let muted: Bool
-    let stepInterval: Float
+    public let controlType: VolumeControlType
+    public let level: Float
+    public let muted: Bool
+    public let stepInterval: Float
 }
 
 
