@@ -17,7 +17,16 @@ public class CastControl: RequestDispatchable {
     
     public weak var delegate: CastControlDelegate?
     
-    public private(set) var connectedApp: CastApp?
+    public private(set) var connectedApp: CastApp? {
+        didSet {
+            if oldValue != connectedApp {
+                let app = connectedApp
+                DispatchQueue.main.async {
+                    self.delegate?.castControl(self, activeAppDidChange: app)
+                }
+            }
+        }
+    }
     
     public private(set) var currentStatus: CastStatus? {
         didSet {
@@ -35,7 +44,9 @@ public class CastControl: RequestDispatchable {
     
     public private(set) var currentMediaStatus: CastMediaStatus? {
         didSet {
-            guard let status = currentMediaStatus else { return }
+            guard let status = currentMediaStatus else {
+                return
+            }
         
             if oldValue != status {
                 DispatchQueue.main.async {
