@@ -161,13 +161,7 @@ class MediaControlChannel: CastChannel {
         
         switch rawType {
             case "MEDIA_STATUS":
-                guard let statuses = json["status"]  as? [NSDictionary],
-                      let status = statuses.first
-                else {
-                    return
-                }
-                
-                delegate?.channel(self, didReceive: CastMediaStatus(json: status))
+                delegate?.channel(self, didReceive: MediaStatusPayload(json: json).status)
                 
             default:
                 print("MediaControlChannel.handleResponse: unknown type = \(rawType)")
@@ -184,7 +178,7 @@ class MediaControlChannel: CastChannel {
             send(request) { result in
                 switch result {
                     case .success(let json):
-                        completion(Result.success(CastMediaStatus(json: json)))
+                        completion(Result.success(MediaStatusPayload(json: json).status))
                         
                     case .failure(let error):
                         completion(Result.failure(error))
@@ -236,12 +230,7 @@ class MediaControlChannel: CastChannel {
         send(request) { result in
             switch result {
                 case .success(let json):
-                    guard let statuse = json["status"] as? [NSDictionary],
-                          let status = statuse.first
-                    else {
-                        return
-                    }
-                    completion(.success(CastMediaStatus(json: status)))
+                    completion(.success(MediaStatusPayload(json: json).status))
             
                 case .failure(let error):
                     completion(.failure(CastError.load(error.localizedDescription)))

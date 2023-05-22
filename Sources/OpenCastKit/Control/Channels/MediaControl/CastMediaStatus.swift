@@ -9,16 +9,28 @@ import Foundation
 
 public struct CastMediaStatus: Codable, Equatable {
     public let mediaSessionId: Int
-    // TODO
+    public let playbackRate: Float
+    public let playerState: String // PLAYING
+    public let currentTime: Float
+    public let supportedMediaCommands: Int
+    public let volume: SetVolume
+    public let activeTrackIds: [Int]
+    public let currentItemId: Int
+    public let repeatMode: RepeatMode
 }
 
 extension CastMediaStatus {
     init(json: NSDictionary) {
-        var json = json
-        if let statuses = json["status"] as? [NSDictionary],
-              let status = statuses.first {
-            json = status
-        }
-        mediaSessionId = json["mediaSessionId"] as? Int ?? 0
+        self.mediaSessionId = json["mediaSessionId"] as! Int
+        self.playbackRate = json["playbackRate"] as! Float
+        self.playerState = json["playerState"] as! String
+        self.currentTime = json["currentTime"] as! Float
+        self.supportedMediaCommands = json["supportedMediaCommands"] as! Int
+        let volume = json["volume"] as! NSDictionary
+        self.volume = SetVolume(json: volume)
+        self.activeTrackIds = json["activeTrackIds"] as! [Int]
+        self.currentItemId = json["currentItemId"] as! Int
+        let repeatMode = json["repeatMode"] as! String
+        self.repeatMode = RepeatMode(rawValue: repeatMode)!
     }
 }
