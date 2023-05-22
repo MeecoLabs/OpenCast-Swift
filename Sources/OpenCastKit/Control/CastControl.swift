@@ -44,11 +44,8 @@ public class CastControl: RequestDispatchable, Channelable {
     
     public private(set) var currentMediaStatus: CastMediaStatus? {
         didSet {
-            guard let status = currentMediaStatus else {
-                return
-            }
-        
-            if oldValue != status {
+            if oldValue != currentMediaStatus {
+                let status = currentMediaStatus
                 DispatchQueue.main.async {
                     self.delegate?.castControl(self, mediaStatusDidChange: status)
                 }
@@ -392,11 +389,11 @@ public class CastControl: RequestDispatchable, Channelable {
         connectedApp = nil
     }
     
-    public func load(media: CastMedia, with app: ReceiverApp, completion: @escaping (Result<CastMediaStatus, CastError>) -> Void) {
+    public func load(media: CastMedia, with app: ReceiverApp, completion: @escaping (Result<[CastMediaStatus], CastError>) -> Void) {
         mediaControlChannel.load(media: media, with: app, completion: completion)
     }
     
-    public func requestMediaStatus(for app: ReceiverApp, completion: ((Result<CastMediaStatus, CastError>) -> Void)? = nil) {
+    public func requestMediaStatus(for app: ReceiverApp, completion: ((Result<[CastMediaStatus], CastError>) -> Void)? = nil) {
         mediaControlChannel.requestMediaStatus(for: app)
     }
     
@@ -416,7 +413,9 @@ public class CastControl: RequestDispatchable, Channelable {
             mediaControlChannel.requestMediaStatus(for: app) { result in
               switch result {
                   case .success(let mediaStatus):
-                      self.mediaControlChannel.sendPause(for: app, mediaSessionId: mediaStatus.mediaSessionId)
+                      if let mediaSessionId = mediaStatus.first?.mediaSessionId {
+                          self.mediaControlChannel.sendPause(for: app, mediaSessionId: mediaSessionId)
+                      }
                   
                   case .failure(let error):
                       print(error)
@@ -436,7 +435,9 @@ public class CastControl: RequestDispatchable, Channelable {
             mediaControlChannel.requestMediaStatus(for: app) { result in
                 switch result {
                     case .success(let mediaStatus):
-                        self.mediaControlChannel.sendPlay(for: app, mediaSessionId: mediaStatus.mediaSessionId)
+                        if let mediaSessionId = mediaStatus.first?.mediaSessionId {
+                            self.mediaControlChannel.sendPlay(for: app, mediaSessionId: mediaSessionId)
+                        }
             
                     case .failure(let error):
                         print(error)
@@ -456,7 +457,9 @@ public class CastControl: RequestDispatchable, Channelable {
             mediaControlChannel.requestMediaStatus(for: app) { result in
                 switch result {
                     case .success(let mediaStatus):
-                        self.mediaControlChannel.sendStop(for: app, mediaSessionId: mediaStatus.mediaSessionId)
+                        if let mediaSessionId = mediaStatus.first?.mediaSessionId {
+                            self.mediaControlChannel.sendStop(for: app, mediaSessionId: mediaSessionId)
+                        }
             
                     case .failure(let error):
                         print(error)
@@ -476,7 +479,9 @@ public class CastControl: RequestDispatchable, Channelable {
             mediaControlChannel.requestMediaStatus(for: app) { result in
                 switch result {
                     case .success(let mediaStatus):
-                        self.mediaControlChannel.sendSeek(to: currentTime, for: app, mediaSessionId: mediaStatus.mediaSessionId)
+                        if let mediaSessionId = mediaStatus.first?.mediaSessionId {
+                            self.mediaControlChannel.sendSeek(to: currentTime, for: app, mediaSessionId: mediaSessionId)
+                        }
             
                     case .failure(let error):
                         print(error)
@@ -496,7 +501,9 @@ public class CastControl: RequestDispatchable, Channelable {
             mediaControlChannel.requestMediaStatus(for: app) { result in
                 switch result {
                     case .success(let mediaStatus):
-                        self.mediaControlChannel.editTracksInformation(activeTrackIds: activeTrackIds, textTrackStyle: textTrackStyle, for: app, mediaSessionId: mediaStatus.mediaSessionId)
+                        if let mediaSessionId = mediaStatus.first?.mediaSessionId {
+                            self.mediaControlChannel.editTracksInformation(activeTrackIds: activeTrackIds, textTrackStyle: textTrackStyle, for: app, mediaSessionId: mediaSessionId)
+                        }
             
                     case .failure(let error):
                         print(error)
@@ -536,7 +543,7 @@ extension CastControl: ReceiverControlChannelDelegate {
 }
 
 extension CastControl: MediaControlChannelDelegate {
-    func channel(_ channel: MediaControlChannel, didReceive mediaStatus: CastMediaStatus) {
-        currentMediaStatus = mediaStatus
+    func channel(_ channel: MediaControlChannel, didReceive mediaStatus: [CastMediaStatus]) {
+        currentMediaStatus = mediaStatus.first
     }
 }

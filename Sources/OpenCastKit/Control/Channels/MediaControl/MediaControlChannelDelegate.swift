@@ -8,5 +8,5 @@
 import Foundation
 
 protocol MediaControlChannelDelegate: AnyObject {
-    func channel(_ channel: MediaControlChannel, didReceive mediaStatus: CastMediaStatus)
+    func channel(_ channel: MediaControlChannel, didReceive mediaStatus: [CastMediaStatus])
 }

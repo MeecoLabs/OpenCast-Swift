@@ -168,7 +168,7 @@ class MediaControlChannel: CastChannel {
         }
     }
     
-    public func requestMediaStatus(for app: ReceiverApp, completion: ((Result<CastMediaStatus, CastError>) -> Void)? = nil) {
+    public func requestMediaStatus(for app: ReceiverApp, completion: ((Result<[CastMediaStatus], CastError>) -> Void)? = nil) {
         let payload = GetMediaStatusPayload(sessionId: app.sessionId)
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,
@@ -221,7 +221,7 @@ class MediaControlChannel: CastChannel {
         send(request)
     }
     
-    public func load(media: CastMedia, with app: ReceiverApp, completion: @escaping (Result<CastMediaStatus, CastError>) -> Void) {
+    public func load(media: CastMedia, with app: ReceiverApp, completion: @escaping (Result<[CastMediaStatus], CastError>) -> Void) {
         let payload = LoadPayload(sessionId: app.sessionId, activeTrackIds: media.activeTrackIds, autoplay: media.autoplay, credentials: media.credentials, credentialsType: media.credentialsType, currentTime: media.currentTime, loadOptions: media.loadOptions, media: media.media, mediaSessionId: media.mediaSessionId, playbackRate: media.playbackRate, queueData: media.queueData)
         let request = requestDispatcher.request(withNamespace: namespace,
                                                 destinationId: app.transportId,
