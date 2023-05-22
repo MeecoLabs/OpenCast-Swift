@@ -14,7 +14,7 @@ public protocol CastControlDelegate: AnyObject {
     
     func castControl(_ client: CastControl, deviceStatusDidChange status: CastStatus)
     
-    func castControl(_ client: CastControl, mediaStatusDidChange: CastMediaStatus)
+    func castControl(_ client: CastControl, mediaStatusDidChange status: CastMediaStatus)
 }
 
 public extension CastControlDelegate {
@@ -24,5 +24,5 @@ public extension CastControlDelegate {
     
     func castControl(_ client: CastControl, deviceStatusDidChange status: CastStatus) {}
     
-    func castControl(_ client: CastControl, mediaStatusDidChange: CastMediaStatus) {}
+    func castControl(_ client: CastControl, mediaStatusDidChange status: CastMediaStatus) {}
 }
