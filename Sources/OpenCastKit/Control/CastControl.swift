@@ -150,6 +150,7 @@ public class CastControl: RequestDispatchable, Channelable {
         self.receive()
         _ = self.heartbeatChannel
         _ = self.receiverControlChannel
+        _ = self.mediaControlChannel
     }
     
     func nextRequestId() -> Int {
