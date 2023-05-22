@@ -19,7 +19,7 @@ public struct SetVolume: Codable, Equatable {
 
 extension SetVolume {
     init(json: NSDictionary) {
-        self.level = json["level"] as? Float
+        self.level = (json["level"] as? NSNumber)?.floatValue
         self.muted = json["muted"] as? Bool
     }
 }

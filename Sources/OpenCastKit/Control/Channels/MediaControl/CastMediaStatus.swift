@@ -48,9 +48,9 @@ public struct CastMediaStatus: Codable, Equatable {
 extension CastMediaStatus {
     init(json: NSDictionary) {
         self.mediaSessionId = json["mediaSessionId"] as! Int
-        self.playbackRate = json["playbackRate"] as! Float
+        self.playbackRate = (json["playbackRate"] as! NSNumber).floatValue
         self.playerState = json["playerState"] as! String
-        self.currentTime = json["currentTime"] as! Float
+        self.currentTime = (json["currentTime"] as! NSNumber).floatValue
         self.supportedMediaCommands = json["supportedMediaCommands"] as! Int
         let volume = json["volume"] as! NSDictionary
         self.volume = SetVolume(json: volume)

@@ -19,8 +19,8 @@ extension Volume {
     init(json: NSDictionary) {
         let controlType = json["controlType"] as! String
         self.controlType = VolumeControlType(rawValue: controlType)!
-        self.level = json["level"] as! Float
+        self.level = (json["level"] as! NSNumber).floatValue
         self.muted = json["muted"] as! Bool
-        self.stepInterval = json["stepInterval"] as! Float
+        self.stepInterval = (json["stepInterval"] as! NSNumber).floatValue
     }
 }
