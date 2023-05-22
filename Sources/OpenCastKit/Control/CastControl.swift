@@ -241,7 +241,7 @@ public class CastControl: RequestDispatchable, Channelable {
     }
     
     private func receive() {
-        connection?.receiveDiscontiguous(minimumIncompleteLength: 1, maximumLength: 48 * 1024, completion: { data, contentContext, isComplete, error in
+        connection?.receiveDiscontiguous(minimumIncompleteLength: 1, maximumLength: 16 * 1024, completion: { data, contentContext, isComplete, error in
             if let error {
                 print("CastClient.receive: error = \(error)")
             } else if let data {
@@ -252,7 +252,7 @@ public class CastControl: RequestDispatchable, Channelable {
                     let headerSize = MemoryLayout<UInt32>.size
                     let header = data.withUnsafeBytes { $0.load(as: UInt32.self) }
                     let payloadSize = Int(CFSwapInt32BigToHost(header))
-                    // TODO: the payload size could be smaller than how much payload we need to load, so we need some form of workaround
+                    // TODO: data will have a maximum size of 16 * 1024 so the payload size might be too large sometimes, so we need to combine iterations
                     let payload = data[headerSize..<headerSize+payloadSize]
                     let message = try CastMessage(serializedData: payload)
                     print("CastClient.receive: message = \(message)")
