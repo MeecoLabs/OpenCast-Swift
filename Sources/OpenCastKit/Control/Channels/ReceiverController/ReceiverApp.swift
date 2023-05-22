@@ -36,7 +36,8 @@ extension ReceiverApp {
         }
         self.sessionId = json["sessionId"] as! String
         self.statusText = json["statusText"] as! String
-        self.transportId = json["transportId"] as! String
+        // TODO: check how this can be nil sometimes (e.g. Netflix)
+        self.transportId = json["transportId"] as? String ?? ""
         self.universalAppId = json["universalAppId"] as! String
     }
 }
