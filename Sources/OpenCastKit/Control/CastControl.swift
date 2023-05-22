@@ -245,7 +245,7 @@ public class CastControl: RequestDispatchable, Channelable {
     
     private func receiveMore(_ buffer: Data) {
         print("CastClient.receiveMore")
-        connection?.receiveDiscontiguous(minimumIncompleteLength: 1, maximumLength: 16 * 1024, completion: { data, contentContext, isComplete, error in
+        connection?.receive(minimumIncompleteLength: 1, maximumLength: 16 * 1024, completion: { data, contentContext, isComplete, error in
             if let error {
                 print("CastClient.receiveMore: error = \(error)")
                 self.receive()
@@ -253,10 +253,15 @@ public class CastControl: RequestDispatchable, Channelable {
                 print("CastClient.receiveMore: received")
                 do {
                     let data = buffer + Data(data)
-                    if !isComplete {
+                    
+                    let headerSize = MemoryLayout<UInt32>.size
+                    let header = data.withUnsafeBytes { $0.load(as: UInt32.self) }
+                    let payloadSize = Int(CFSwapInt32BigToHost(header))
+                    
+                    if payloadSize > data.count {
                         self.receiveMore(data)
                     } else {
-                        try self.processReceived(data)
+                        try self.processReceived(data, headerSize: headerSize, payloadSize: payloadSize)
                         self.receive()
                     }
                 } catch {
@@ -267,11 +272,11 @@ public class CastControl: RequestDispatchable, Channelable {
         })
     }
     
-    private func processReceived(_ data: Data) throws {
+    private func processReceived(_ data: Data, headerSize: Int, payloadSize: Int) throws {
         print("CastClient.processReceived")
-        let headerSize = MemoryLayout<UInt32>.size
-        let header = data.withUnsafeBytes { $0.load(as: UInt32.self) }
-        let payloadSize = Int(CFSwapInt32BigToHost(header))
+//        let headerSize = MemoryLayout<UInt32>.size
+//        let header = data.withUnsafeBytes { $0.load(as: UInt32.self) }
+//        let payloadSize = Int(CFSwapInt32BigToHost(header))
         // TODO: data will have a maximum size of 16 * 1024 so the payload size might be too large sometimes, so we need to combine iterations
         let payload = data[headerSize..<headerSize+payloadSize]
         let message = try CastMessage(serializedData: payload)
